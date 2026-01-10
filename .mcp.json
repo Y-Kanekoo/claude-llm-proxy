@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "llm-proxy": {
+      "command": "/bin/bash",
+      "args": ["-c", "cd ~/Projects/claude-llm-proxy && source venv/bin/activate && python server.py"],
+      "env": {}
+    }
+  }
+}
