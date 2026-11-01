@@ -1,4 +1,5 @@
-mcp>=1.0.0
+# mcp 2.x はサーバーAPI（list_tools などのデコレーター）が非互換のため 1.x に固定する
+mcp>=1.0.0,<2
 httpx>=0.25.0
 python-dotenv>=1.0.0
 pydantic>=2.0.0

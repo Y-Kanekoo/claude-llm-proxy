@@ -4,7 +4,9 @@ Ollama ローカルLLMクライアント
 
 import os
 import time
+
 import httpx
+
 from .base import BaseLLMClient, LLMResponse
 
 
@@ -24,7 +26,7 @@ class OllamaClient(BaseLLMClient):
             with httpx.Client(timeout=2.0) as client:
                 response = client.get(f"{self.base_url}/api/tags")
                 return response.status_code == 200
-        except Exception:
+        except Exception:  # noqa: BLE001 - 接続できない理由を問わず「利用不可」と判定するための意図的な捕捉
             return False
 
     def list_models(self) -> list[str]:
@@ -34,7 +36,7 @@ class OllamaClient(BaseLLMClient):
                 response = client.get(f"{self.base_url}/api/tags")
                 if response.status_code == 200:
                     return [m["name"] for m in response.json().get("models", [])]
-        except Exception:
+        except Exception:  # noqa: BLE001, S110 - モデル一覧の取得失敗は理由を問わず空一覧として扱う（従来どおり）
             pass
         return []
 
@@ -92,7 +94,7 @@ class OllamaClient(BaseLLMClient):
                     tokens_used=data.get("eval_count", 0),
                     latency_ms=(time.time() - start) * 1000
                 )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - 想定外の例外も含めエラー応答に変換し、ルーターが次のプロバイダーへ切り替えるための意図的な捕捉
             return LLMResponse(
                 content="",
                 model=model,

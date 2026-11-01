@@ -10,13 +10,14 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-from mcp.types import Tool, TextContent
+from mcp.types import TextContent, Tool
 
-from router import router, TaskType
+from router import TaskType, router
 
 server = Server("llm-proxy")
 
