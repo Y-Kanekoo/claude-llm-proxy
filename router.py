@@ -2,10 +2,13 @@
 インテリジェントルーター - タスク種別に応じて最適なLLMプロバイダーを選択
 """
 
-from typing import Optional
+
 from llm_clients import (
-    GroqClient, GeminiClient, OpenRouterClient,
-    CloudflareClient, OllamaClient,
+    CloudflareClient,
+    GeminiClient,
+    GroqClient,
+    OllamaClient,
+    OpenRouterClient,
 )
 from llm_clients.base import LLMResponse
 
@@ -48,7 +51,7 @@ class IntelligentRouter:
             if client.is_available() and client.can_request()
         ]
 
-    def get_provider_for_task(self, task_type: str) -> Optional[str]:
+    def get_provider_for_task(self, task_type: str) -> str | None:
         """タスク種別に応じた最適なプロバイダーを取得"""
         priority = TASK_PROVIDER_PRIORITY.get(
             task_type,

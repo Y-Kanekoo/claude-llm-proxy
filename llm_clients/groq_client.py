@@ -4,7 +4,9 @@ Groq LLMクライアント
 
 import os
 import time
+
 import httpx
+
 from .base import BaseLLMClient, LLMResponse, RateLimitTracker
 
 
@@ -77,7 +79,7 @@ class GroqClient(BaseLLMClient):
                 provider=self.provider_name,
                 error=f"HTTP {e.response.status_code}"
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - 想定外の例外も含めエラー応答に変換し、ルーターが次のプロバイダーへ切り替えるための意図的な捕捉
             return LLMResponse(
                 content="",
                 model=self.model,

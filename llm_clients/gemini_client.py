@@ -4,7 +4,9 @@ Google Gemini LLMクライアント
 
 import os
 import time
+
 import httpx
+
 from .base import BaseLLMClient, LLMResponse, RateLimitTracker
 
 
@@ -73,7 +75,7 @@ class GeminiClient(BaseLLMClient):
                     tokens_used=data.get("usageMetadata", {}).get("totalTokenCount", 0),
                     latency_ms=(time.time() - start) * 1000
                 )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - 想定外の例外も含めエラー応答に変換し、ルーターが次のプロバイダーへ切り替えるための意図的な捕捉
             return LLMResponse(
                 content="",
                 model=self.model,

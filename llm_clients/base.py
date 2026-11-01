@@ -2,10 +2,9 @@
 LLMクライアントの基底クラスとユーティリティ
 """
 
+import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
-import time
 
 
 @dataclass
@@ -16,7 +15,7 @@ class LLMResponse:
     provider: str
     tokens_used: int = 0
     latency_ms: float = 0.0
-    error: Optional[str] = None
+    error: str | None = None
 
 
 class RateLimitTracker:
@@ -43,9 +42,7 @@ class RateLimitTracker:
 
         if len(self.minute_requests) >= self.rpm_limit:
             return False
-        if self.rpd_limit and len(self.day_requests) >= self.rpd_limit:
-            return False
-        return True
+        return not (self.rpd_limit and len(self.day_requests) >= self.rpd_limit)
 
     def record_request(self):
         """リクエストを記録"""
@@ -66,17 +63,15 @@ class BaseLLMClient(ABC):
     provider_name: str = "base"
 
     def __init__(self):
-        self.rate_tracker: Optional[RateLimitTracker] = None
+        self.rate_tracker: RateLimitTracker | None = None
 
     @abstractmethod
     async def generate(self, prompt: str, system: str = "", **kwargs) -> LLMResponse:
         """テキスト生成を実行"""
-        pass
 
     @abstractmethod
     def is_available(self) -> bool:
         """プロバイダーが利用可能かどうかを判定"""
-        pass
 
     def can_request(self) -> bool:
         """レート制限内でリクエスト可能かどうかを判定"""
